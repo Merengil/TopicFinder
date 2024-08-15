@@ -1,28 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
 
 namespace TopicFinder
 {
-    public partial class Form1 : Form
+    public partial class TopicFinderMain : Form
     {
-        List<string> listTopics;
+        const string FILENAME = "listTopics.txt";
+        List<string> listTopics = new List<string>();
 
-        public Form1()
+        public TopicFinderMain()
         {
             InitializeComponent();
+            listTopics = LoadTopicsFromFile();
+        }
+
+        private List<string> LoadTopicsFromFile()
+        {
+            if (!File.Exists(FILENAME))
+                using (FileStream fs = File.Create(FILENAME))
+                    using (StreamWriter sw = new StreamWriter(fs))
+                {
+                    sw.WriteLine("Weather");
+                    sw.WriteLine("Gaming");
+                }
+
+            string line = "";
+            using (StreamReader reader = new StreamReader(FILENAME))
+                while (!string.IsNullOrEmpty(line = reader.ReadLine()))
+                    listTopics.Add(line);
+
+            return listTopics;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             Random rd = new Random(DateTime.Now.Millisecond);
-            listTopics.
+            topicIntro.Text = "Your next topic is:";
+            topicText.Text = listTopics[rd.Next(listTopics.Count)];
         }
     }
 }
